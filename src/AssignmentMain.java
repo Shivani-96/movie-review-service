@@ -61,27 +61,35 @@ public class AssignmentMain {
 				String userName = br.readLine().trim();
 				if(users.containsKey(userName)) { // check to see if user is valid or not
 					int i = 1;
+					boolean moviesToReview = false;//flag to check if there are any movies to review
 					System.out.println("List of movies to review");
 					System.out.println("------------------------");
 					//only those movies which are released on or before 2021 are to be reviewed.
 					//for simplicity comparison is done using year of release which is taken as int
 					for(String key:movies.keySet()) { // loop to display al movies eligible for review
 						if(movies.get(key).getReleaseYear() <= 2021) {
+							moviesToReview = true;
 							System.out.println(i+" "+key);
 							i++;
 						}
 					}
-					System.out.println("Enter Movie to Review:");
-					String movieToReview = br.readLine().trim();
-					User reviewer = users.get(userName);
-					if(reviewer.getMap().containsKey(movieToReview)) System.out.println("Movie already reviewed!!!"); // if a user has already reviewed a movie then movie review of that movie not allowed
+					if(!moviesToReview) System.out.println("No movies to review!!!");  
 					else {
-						System.out.println("Enter score:");
-						int score = Integer.parseInt(br.readLine().trim());
-						score = reviewer.addReview(movieToReview, score);// calling the method in User class to add review
-						Movie movieReviewed = movies.get(movieToReview); 
-						movieReviewed.update(reviewer.getUsername(), score); // calling the method in Movie class to update total review score and total reviews of that movie
-						System.out.println("Movie Reviewed");
+						System.out.println("Enter Movie to Review:");
+						String movieToReview = br.readLine().trim();
+						User reviewer = users.get(userName);
+						if(reviewer.getMap().containsKey(movieToReview)) System.out.println("Movie already reviewed!!!"); // if a user has already reviewed a movie then movie review of that movie not allowed
+						else {
+							System.out.println("Enter score:(between 1 to 10)");
+							int score = Integer.parseInt(br.readLine().trim());
+							if(score > 10 || score < 1) System.out.println("Please enter valid score!!!");
+							else {
+								score = reviewer.addReview(movieToReview, score);// calling the method in User class to add review
+								Movie movieReviewed = movies.get(movieToReview); 
+								movieReviewed.update(reviewer.getUsername(), score); // calling the method in Movie class to update total review score and total reviews of that movie
+								System.out.println("Movie Reviewed");
+							}
+						}
 					}
 				}
 				else System.out.println("Enter valid username!!!");// if user is not valid then he is not allowed to review
